@@ -58,7 +58,7 @@ exports.getDossiers = async (req, res) => {
     const user = req.user;
     let whereClause = {};
 
-    // Role-based filter
+    // 🔹 Role-based filter
     if (user.role === "Chef") {
       whereClause = {};
     } else if (user.role === "Manager") {
@@ -67,29 +67,28 @@ exports.getDossiers = async (req, res) => {
       whereClause = { id_service: user.id_service };
     }
 
-    // Pagination params
+    // 🔹 Pagination params
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
-    
-    // Search param
+
+    // 🔹 Search param
     const search = req.query.search;
     const status = req.query.status;
 
-    // Build search conditions
+    // 🔹 Build search conditions safely
     if (search) {
       whereClause = {
         ...whereClause,
         [Op.or]: [
           { intitule_dossier: { [Op.iLike]: `%${search}%` } },
-          // Add joins for user and service search
           { '$user.username$': { [Op.iLike]: `%${search}%` } },
           { '$service.lib_service_fr$': { [Op.iLike]: `%${search}%` } }
         ]
       };
     }
 
-    // Build include array
+    // 🔹 Include array
     const includeArray = [
       { model: Division, as: 'division', attributes: ['lib_division_fr'], required: false },
       { model: Service, as: 'service', attributes: ['lib_service_fr'], required: false },
@@ -104,64 +103,70 @@ exports.getDossiers = async (req, res) => {
             as: 'dossierInstructions', 
             required: false,
             include: [
-              { 
-                model: Instruction, 
-                as: 'instruction', 
-                required: false,
-                include: [
+              { model: Instruction, as: 'instruction', required: false, include: [
                   { model: User, as: 'user', attributes: ['username'], required: false }
-                ]
-              }
+              ]}
             ]
           }
         ]
       }
     ];
 
-    // Add status filtering if needed
+    // 🔹 Status filtering safely
     if (status && status !== 'all') {
-      if (status === 'new') {
-        includeArray[3].where = { libelle_situation: 'Dossier créé' };
-        includeArray[3].required = true;
-      } else if (status === 'completed') {
-        includeArray[3].where = { libelle_situation: 'Terminé' };
-        includeArray[3].required = true;
-      } else if (status === 'progress') {
-        includeArray[3].where = { 
-          libelle_situation: { 
-            [Op.and]: [
-              { [Op.ne]: 'Dossier créé' },
-              { [Op.ne]: 'Terminé' }
-            ]
-          }
-        };
-        includeArray[3].required = true;
+      includeArray[3].required = true;
+      switch (status) {
+        case 'new':
+          includeArray[3].where = { libelle_situation: 'Dossier créé' };
+          break;
+        case 'completed':
+          includeArray[3].where = { libelle_situation: 'Terminé' };
+          break;
+        case 'progress':
+          includeArray[3].where = { 
+            libelle_situation: { 
+              [Op.and]: [
+                { [Op.ne]: 'Dossier créé' },
+                { [Op.ne]: 'Terminé' }
+              ]
+            }
+          };
+          break;
+        default:
+          includeArray[3].required = false;
       }
     }
 
-    // Fetch data with pagination
-    const { count, rows } = await Dossier.findAndCountAll({
+    // 🔹 Debug: log queries
+    console.log("WhereClause:", JSON.stringify(whereClause, null, 2));
+    console.log("IncludeArray:", includeArray.map(i => i.as));
+
+    // 🔹 Fetch data safely
+    const result = await Dossier.findAndCountAll({
       where: whereClause,
       include: includeArray,
       order: [[{ model: SituationDossier, as: 'situations' }, 'date_situation', 'DESC']],
       limit,
       offset,
-      distinct: true // Important for accurate count with joins
+      distinct: true
     });
 
-    // Calculate total pages
-    const totalPages = Math.ceil(count / limit);
-
     res.json({
-      total: count,
+      total: result.count,
       page,
-      totalPages,
-      dossiers: rows
+      totalPages: Math.ceil(result.count / limit),
+      dossiers: result.rows
     });
 
   } catch (error) {
     console.error("❌ getDossiers error:", error);
-    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    res.json({
+      total: 0,
+      page: 1,
+      totalPages: 0,
+      dossiers: [],
+      error: error.message
+    });
   }
 };
 exports.updateDossier = async (req, res) => {
