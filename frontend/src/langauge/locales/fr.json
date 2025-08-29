@@ -1,0 +1,297 @@
+{
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "dossiers": "Gestion Dossiers",
+    "users": "Utilisateurs",
+    "instructions": "Instructions",
+    "reports": "Rapports",
+    "divisions": "Divisions",
+    "services": "Services",
+    "profiles": "Profils"
+  },
+  "suivi": {
+    "title": "Suivi du dossier",
+    "noSituation": "Aucune situation trouvée.",
+    "date": "Date Situation",
+    "libelle": "Libelle",
+    "observation": "Observation",
+    "instructions": "Instructions",
+    "none": "Aucune"
+  },
+  "users": {
+    "title": "Gestion des Utilisateurs",
+    "new": "Nouveau",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "id": "ID",
+    "name": "Nom",
+    "email": "Email",
+    "profile": "Profil",
+    "actions": "Actions",
+    "none": "Aucun utilisateur",
+    "loadError": "Erreur lors du chargement",
+    "serverError": "Erreur serveur",
+    "deleted": "Utilisateur supprimé !",
+    "confirmTitle": "Confirmer la suppression",
+    "confirmMessage": "Voulez-vous vraiment supprimer cet utilisateur ?",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "selectProfile": "-- Sélectionner profil --",
+    "created": "Utilisateur créé !",
+    "updated": "Utilisateur mis à jour !",
+    "profiles": {
+      "admin": "Admin",
+      "chef": "Chef",
+      "fonctionnaire": "Fonctionnaire",
+      "sg": "SG",
+      "cabinet": "Cabinet Gouv"
+    }
+  },
+  "header": {
+    "manageInstructions": "Gérer les Instructions",
+    "createOrUse": "Créez de nouvelles instructions ou utilisez celles existantes"
+  },
+  "dossierList": {
+    "intitule": "Intitulé",
+    "creePar": "Créé par",
+    "division": "Division", 
+    "service": "Service",
+    "dateCreation": "Date création",
+    "instructions": "Instructions",
+    "etat": "État",
+    "actions": "Actions",
+    "view": "Voir",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "changerEtat": "Changer État",
+"recherch": "Rechercher par intitulé, utilisateur ou service..."  ,
+"lesstatuts":"Tous les Status",
+"enCours": "Nouveaux",
+    "enRetard": "En cours",
+    "termine": "Terminés",
+    "Réinitialiser":"Réinitialiser"
+
+},
+
+  "stats": {
+    "availableDossiers": "Dossiers disponibles",
+    "availableInstructions": "Instructions disponibles",
+    "selectedInstructions": "Instructions sélectionnées",
+    "selectedDossier": "Dossier sélectionné"
+  },
+  "form": {
+    "attributionCreation": "Attribution & Création",
+    "selectDossier": "Sélectionner un Dossier",
+    "chooseDossier": "-- Choisir un dossier --",
+    "searchDossier": "Rechercher un dossier...",
+    "manageInstructions": "Gérer les Instructions",
+    "createInstruction": "Créer une instruction",
+    "chooseInstruction": "-- Choisir une instruction existante --",
+    "submit": "Attribuer {{count}} instruction(s)",
+    "clearAll": "Tout effacer"
+  },
+  "modal": {
+    "createNewInstruction": "Créer une nouvelle instruction",
+    "instructionsSelected": "instructions sélectionnées",
+    "instructions none Selected": "aucune instruction sélectionnée",
+    "quickTemplates": "Modèles rapides :",
+    "instructionName": "Nom de l'instruction",
+    "descriptionOptional": "Description (optionnelle)",
+    "cancel": "Annuler",
+    "createAndAdd": "Créer et Ajouter"
+  },
+  "alerts": {
+    "selectDossierAndInstructions": "Sélectionnez un dossier et ajoutez des instructions.",
+    "selectDossier": "Sélectionnez un dossier.",
+    "addAtLeastOneInstruction": "Ajoutez au moins une instruction.",
+    "readyToAssign": "Prêt à attribuer {{count}} instruction(s) au dossier #{{dossierId}}"
+  },
+  "welcome": "Bienvenue dans le système de gestion des dossiers",
+  "login": "Se connecter",
+  "logout": "Se déconnecter",
+  "dashboard": {
+    "tableauDeBord": "Tableau de bord",
+    "nouveauDossier": "Nouveau Dossier",
+    "trySearch": "Essayez de modifier vos critères de recherche",
+    "statistiques": {
+      "totalDossiers": "Total Dossiers",
+      "enCours": "En cours",
+      "termines": "Terminés",
+      "enRetard": "En retard"
+    },
+    "repartition": {
+      "division": "Répartition par Division",
+      "service": "Répartition par Service"
+    },
+    "dossiersRecents": "Dossiers Récents",
+    "rechercher": "Rechercher...",
+    "tousLesEtats": "Tous les états",
+    "nouveau": "Nouveau",
+    "enCours": "En cours",
+    "termine": "Terminé",
+    "enRetard": "En retard",
+    "modifierDossier": "Modifier Dossier",
+    "creerDossier": "Créer Nouveau Dossier",
+    "aucunDossier": "Aucun dossier trouvé"
+  },
+  "confirmModal": {
+    "title": "Confirmation",
+    "message": "Êtes-vous sûr de vouloir continuer?",
+    "warning": "Cette action ne peut pas être annulée.",
+    "cancel": "Annuler",
+    "confirm": "Supprimer"
+  },
+  "servicePage": {
+    "title": "Gestion des Services",
+    "newService": "+ Nouveau Service",
+    "loading": "Chargement des données...",
+    "table": {
+      "id": "ID",
+      "nameFr": "Nom FR",
+      "nameAr": "Nom AR",
+      "division": "Division",
+      "actions": "Actions"
+    },
+    "buttons": {
+      "edit": "✓ Modifier",
+      "delete": "🗑️ Supprimer",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "form": {
+      "nameFr": "Nom Service FR",
+      "nameAr": "Nom Service AR",
+      "division": "Division",
+      "chooseDivision": "Choisir division",
+      "unnamedDivision": "Division sans nom"
+    },
+    "modal": {
+      "editTitle": "Modifier Service",
+      "newTitle": "Nouveau Service"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer Service",
+      "message": "Êtes-vous sûr de vouloir supprimer ce service ? Cette action est irréversible."
+    },
+    "success": {
+      "created": "Service créé !",
+      "updated": "Service modifié !",
+      "deleted": "Service supprimé !"
+    },
+    "warnings": {
+      "requiredFields": "Nom service et division obligatoires"
+    },
+    "errors": {
+      "loadData": "Erreur chargement données",
+      "saveError": "Erreur enregistrement service",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "userDropdown": {
+    "userMenu": "Menu utilisateur",
+    "user": "Utilisateur",
+    "role": "Rôle",
+    "newProject": "Nouveau projet",
+    "settings": "Paramètres",
+    "myProfile": "Mon Profil",
+    "logout": "Se déconnecter"
+  },
+  "divisionPage": {
+    "title": "Gestion des Divisions",
+    "newDivision": "+ Nouvelle Division",
+    "loading": "Chargement des divisions...",
+    "noData": "Aucune division trouvée",
+    "table": {
+      "id": "ID",
+      "nameFr": "Nom FR",
+      "nameAr": "Nom AR",
+      "actions": "Actions"
+    },
+    "buttons": {
+      "edit": "✏️ Modifier",
+      "delete": "🗑️ Supprimer",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "form": {
+      "nameFr": "Nom FR",
+      "nameAr": "Nom AR"
+    },
+    "modal": {
+      "editTitle": "Modifier Division",
+      "newTitle": "Nouvelle Division"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer Division",
+      "message": "Êtes-vous sûr de vouloir supprimer cette division ? Cette action est irréversible."
+    },
+    "success": {
+      "created": "Division créée !",
+      "updated": "Division modifiée !",
+      "deleted": "Division supprimée !"
+    },
+    "warnings": {
+      "requiredFields": "Les noms en français et en arabe sont obligatoires"
+    },
+    "errors": {
+      "loadData": "Erreur lors du chargement des divisions",
+      "saveError": "Erreur lors de l'enregistrement",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "instructions": {
+    "manage": "Gérer les Instructions",
+    "searchPlaceholder": "Rechercher une instruction existante...",
+    "chooseExisting": "-- Choisir une instruction existante --",
+    "add": "Ajouter"
+  },
+  "Dossiers": {
+    "Gstion des dossiers": "Gestion des dossiers",
+    "Ajouter Dossier": "Ajouter dossier"
+  },
+  "loading": "Chargement des données...",
+  "errors": {
+    "saveError": "Erreur lors de l'enregistrement",
+    "serverError": "Erreur serveur"
+  },
+  "warnings": {
+    "requiredFields": "Veuillez remplir tous les champs obligatoires"
+  },
+  "dossier": {
+    "created": "Dossier créé !",
+    "updated": "Dossier modifié !"
+  },
+  "dossierForm": {
+    "intitule": "Intitulé du dossier",
+    "intitulePlaceholder": "Saisir l'intitulé du dossier",
+    "chooseDivision": "Choisir division",
+    "serviceLabel": "Service",
+    "chooseService": "Choisir service",
+    "unnamedService": "Service sans nom"
+  },
+  "optional": "optionnel",
+  "modify": "Modifier",
+  "create": "Créer",
+  
+  "instructionPage": {
+    "title": "Liste des Instructions",
+    "refresh": "Rafraîchir",
+    "noData": "Aucune instruction trouvée.",
+    "table": {
+      "id": "#",
+      "label": "Libellé",
+      "description": "Description",
+      "createdBy": "Créé par",
+      "actions": "Actions"
+    },
+    "buttons": {
+      "delete": "Supprimer"
+    },
+    "messages": {
+      "loadError": "Erreur chargement",
+      "deleteError": "Erreur suppression",
+      "deleted": "Instruction supprimée avec succès ✅",
+      "confirmDelete": "Voulez-vous vraiment supprimer cette instruction ?"
+    }
+  }
+}

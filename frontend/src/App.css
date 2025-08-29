@@ -1,0 +1,226 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.input-group-text {
+  background-color: #fff;
+}
+
+.btn-primary {
+  background-color: #2c3e50;
+  border-color: #2c3e50;
+}
+
+.btn-primary:hover {
+  background-color: #1a252f;
+  border-color: #1a252f;
+}
+/* Enhanced Table Styling - More Compact */
+.table {
+  --bs-table-border-width: 0;
+  font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem 0.75rem;
+  vertical-align: middle;
+}
+
+.table > tbody > tr {
+  transition: all 0.2s ease-in-out;
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--bs-gray-50) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.table-dark.table-hover tbody tr:hover {
+  background-color: var(--bs-gray-800) !important;
+}
+
+/* Compact Button Styling */
+.btn-icon {
+  border: 1px solid transparent;
+}
+
+.btn-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Cursor pointer for sortable headers */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  opacity: 0.8;
+}
+
+/* Enhanced Dropdown Styling */
+.dropdown-menu {
+  border: 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.dropdown-menu-dark {
+  background-color: var(--bs-gray-900);
+}
+
+.dropdown-item {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.dropdown-item:hover {
+  transform: translateX(4px);
+}
+
+/* Enhanced Badge Styling */
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Enhanced Card Styling */
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Enhanced Form Check Styling */
+.form-check-input {
+  border-radius: 6px;
+  border-width: 2px;
+}
+
+.form-check-input:checked {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+  }
+  
+  .btn-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  
+  .badge {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* Enhanced Loading Animation */
+@keyframes pulse-loading {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.loading-pulse {
+  animation: pulse-loading 1.5s ease-in-out infinite;
+}
+
+/* Enhanced Empty State */
+.empty-state-icon {
+  transition: all 0.3s ease;
+}
+
+.empty-state-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Status Badge Enhancements */
+.status-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.status-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.status-badge:hover::before {
+  left: 100%;
+}
+
+/* Action buttons group styling */
+.btn-group-actions {
+  gap: 4px;
+}
+
+.btn-group-actions .btn {
+  border-radius: 8px !important;
+}
+
+/* Table selection highlight */
+tr.table-active {
+  position: relative;
+}
+
+tr.table-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--bs-primary), var(--bs-info));
+}
+
+/* Smooth transitions for all interactive elements */
+.btn, .badge, .dropdown-toggle, .form-check-input {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for table container */
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: var(--bs-gray-100);
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--bs-gray-400);
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--bs-gray-500);
+}
