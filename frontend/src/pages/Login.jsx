@@ -17,6 +17,7 @@ const Login = () => {
   try {
     console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
 const res = await api.post('/users/login', { email, password });
+ console.log('Login response:', res.data); 
     // تخزين الـtoken
     localStorage.setItem('token', res.data.token);
     console.log(localStorage.getItem('token'));
