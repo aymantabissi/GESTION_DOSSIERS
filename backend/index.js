@@ -32,7 +32,10 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
   : ['http://localhost:3000'];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: [
+    'http://localhost:3000',
+    'gestion-dossiers-66z6-aq3wg2ob0-aymantabissis-projects.vercel.app'  // Add your actual Vercel URL here
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
