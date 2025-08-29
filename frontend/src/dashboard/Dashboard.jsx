@@ -6,6 +6,7 @@ import { Modal, Button, Card, Form, Spinner, Table } from 'react-bootstrap';
 import DossierForm from '../pages/dosssier/DossierForm';
 import StatusBadge from '../pages/dosssier/StatusBadge ';
 import StatsCards from './StatsCards';
+import axiosInstance from '../utils/axiosInstance';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -30,22 +31,17 @@ const Dashboard = ({ darkMode = true }) => {
   }, []);
 
   const fetchDashboard = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/dashboard/stats`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error(`Erreur ${res.status}`);
-      const data = await res.json();
-      setDashboardData(data);
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    const res = await axiosInstance.get('/dashboard/stats'); // no double /api
+    setDashboardData(res.data);
+  } catch (err) {
+    console.error(err);
+    setError(err.response?.data?.message || err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const refreshDashboard = () => fetchDashboard();
 

@@ -26,8 +26,7 @@ app.use(express.json());
 // CORS configuration
 const allowedOrigins = process.env.NODE_ENV === 'production' 
   ? [
-      'https://your-vercel-app-name.vercel.app', // Replace with your actual Vercel URL
-      // Add any other domains you need
+      'https://gestion-dossiers-66z6.vercel.app' // ✅ هادي هي الصحيحة
     ]
   : ['http://localhost:3000'];
 

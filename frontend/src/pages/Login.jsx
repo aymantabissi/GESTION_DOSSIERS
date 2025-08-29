@@ -5,28 +5,27 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import minster from '../assests/minester.jpeg';
-import api from '../api/api';
+import axiosInstance from '../utils/axiosInstance';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
- const handleLogin = async (e) => {
+const handleLogin = async (e) => {
   e.preventDefault();
   try {
     console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
-const res = await api.post('/users/login', { email, password });
- console.log('Login response:', res.data); 
-    // تخزين الـtoken
+
+    const res = await axiosInstance.post('/users/login', { email, password });
+    console.log('Login response:', res.data); 
+
+    // Store token
     localStorage.setItem('token', res.data.token);
-    console.log(localStorage.getItem('token'));
 
-
-    // 🔥 تخزين بيانات المستخدم
+    // Store user data
     if (res.data.user) {
       localStorage.setItem('user', JSON.stringify(res.data.user));
-
     }
 
     toast.success('Login successful!', {
@@ -52,6 +51,7 @@ const res = await api.post('/users/login', { email, password });
     });
   }
 };
+
 
   return (
     <div 

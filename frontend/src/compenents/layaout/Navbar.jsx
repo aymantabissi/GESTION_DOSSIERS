@@ -61,9 +61,9 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     if (currentUser?.id_user) {
       const fetchAllNotifications = async () => {
         try {
-          const res = await getNotifications(currentUser.id_user);
-          setNotifications(res.data);
-          setUnreadCount(res.data.filter(n => !n.is_read).length);
+         const res = await getNotifications(currentUser.id_user); // res hiya array
+setNotifications(res);
+setUnreadCount(res.filter(n => !n.is_read).length);
         } catch (err) {
           console.error('Error fetching notifications:', err);
         }
