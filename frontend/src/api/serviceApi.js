@@ -1,68 +1,23 @@
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
-const API_URL = 'http://localhost:5000/api/services'; // endpoint service
+const SERVICE_URL = '/services';
 
-// جلب التوكن من localStorage
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token'); // ولا اسم key اللي كتستعمل
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : '',
-    }
-  };
-};
-
-// 🔹 Get all services
 export const getServices = async () => {
-  try {
-    const response = await axios.get(API_URL, getAuthHeaders());
-    return response.data;
-  } catch (error) {
-    console.error('Erreur fetch services:', error);
-    throw error;
-  }
+  return axiosInstance.get(SERVICE_URL).then(res => res.data);
 };
 
-// 🔹 Get service by ID
 export const getServiceById = async (id) => {
-  try {
-    const response = await axios.get(`${API_URL}/${id}`, getAuthHeaders());
-    return response.data;
-  } catch (error) {
-    console.error('Erreur fetch service:', error);
-    throw error;
-  }
+  return axiosInstance.get(`${SERVICE_URL}/${id}`).then(res => res.data);
 };
 
-// 🔹 Create service
 export const createService = async (service) => {
-  try {
-    const response = await axios.post(API_URL, service, getAuthHeaders());
-    return response.data;
-  } catch (error) {
-    console.error('Erreur create service:', error);
-    throw error;
-  }
+  return axiosInstance.post(SERVICE_URL, service).then(res => res.data);
 };
 
-// 🔹 Update service
 export const updateService = async (id, service) => {
-  try {
-    const response = await axios.put(`${API_URL}/${id}`, service, getAuthHeaders());
-    return response.data;
-  } catch (error) {
-    console.error('Erreur update service:', error);
-    throw error;
-  }
+  return axiosInstance.put(`${SERVICE_URL}/${id}`, service).then(res => res.data);
 };
 
-// 🔹 Delete service
 export const deleteService = async (id) => {
-  try {
-    const response = await axios.delete(`${API_URL}/${id}`, getAuthHeaders());
-    return response.data;
-  } catch (error) {
-    console.error('Erreur delete service:', error);
-    throw error;
-  }
+  return axiosInstance.delete(`${SERVICE_URL}/${id}`).then(res => res.data);
 };

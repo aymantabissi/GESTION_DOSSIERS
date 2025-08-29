@@ -1,10 +1,8 @@
 import axios from 'axios';
 import API_BASE_URL from '../config/api';
 
-const API_URL = `${API_BASE_URL}/api/services`;
-
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: `${API_BASE_URL}/api`, // daba gha ydir https://gestion-dossiers-3.onrender.com/api
 });
 
 api.interceptors.request.use(config => {

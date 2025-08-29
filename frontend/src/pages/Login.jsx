@@ -15,6 +15,7 @@ const Login = () => {
  const handleLogin = async (e) => {
   e.preventDefault();
   try {
+    console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
 const res = await api.post('/users/login', { email, password });
     // تخزين الـtoken
     localStorage.setItem('token', res.data.token);

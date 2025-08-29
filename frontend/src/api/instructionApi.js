@@ -1,44 +1,19 @@
-import axios from 'axios';
-import API_BASE_URL from '../config/api';
+import axiosInstance from '../utils/axiosInstance';
 
+const INSTRUCTION_URL = '/instructions';
 
-const API_URL = `${API_BASE_URL}/api/instructions`;
-
-// جلب التوكن من localStorage
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : '',
-    }
-  };
-};
-
-// GET all instructions
 export const getInstructions = async () => {
-  try {
-    const response = await axios.get(API_URL, getAuthHeaders());
-    return response.data;
-  } catch (error) {
-    console.error('Erreur fetch instructions:', error);
-    throw error;
-  }
+  return axiosInstance.get(INSTRUCTION_URL).then(res => res.data);
 };
 
-// POST create instruction
 export const createInstruction = async (instruction) => {
-  const response = await axios.post(API_URL, instruction, getAuthHeaders());
-  return response.data;
+  return axiosInstance.post(INSTRUCTION_URL, instruction).then(res => res.data);
 };
 
-// PUT update instruction
 export const updateInstruction = async (id, instruction) => {
-  const response = await axios.put(`${API_URL}/${id}`, instruction, getAuthHeaders());
-  return response.data;
+  return axiosInstance.put(`${INSTRUCTION_URL}/${id}`, instruction).then(res => res.data);
 };
 
-// DELETE instruction
 export const deleteInstruction = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`, getAuthHeaders());
-  return response.data;
+  return axiosInstance.delete(`${INSTRUCTION_URL}/${id}`).then(res => res.data);
 };

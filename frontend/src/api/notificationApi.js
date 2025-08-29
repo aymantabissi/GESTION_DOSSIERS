@@ -1,57 +1,31 @@
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
-import API_BASE_URL from '../config/api';
+const NOTIF_URL = '/notifications';
 
-const API_URL = `${API_BASE_URL}/api`;
-
-
-// 🔹 دالة باش تجيب token من localStorage
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token'); // تأكد باللي خزنته فـ login  
-  console.log("📌 Token from localStorage:", token);
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
-
-// 🔹 جلب الإشعارات غير المقروءة فقط
-export const getUnreadNotifications = (userId) => {
-  return axios.get(`${API_URL}/notifications/user/${userId}/unread`, getAuthHeaders());
-};
-
-// 🔹 جلب جميع الإشعارات لمستخدم (غير مقروءة + مقروءة)
-export const getAllNotifications = (userId) => {
-  return axios.get(`${API_URL}/notifications/user/${userId}`, getAuthHeaders());
-};
-
-// 🔹 جلب الإشعارات (default: get ALL notifications)
 export const getNotifications = (userId) => {
-  return getAllNotifications(userId); // Now returns ALL notifications (read + unread)
+  return axiosInstance.get(`${NOTIF_URL}/user/${userId}`).then(res => res.data);
 };
 
-// 🔹 تعليم الإشعار كمقروء
+export const getUnreadNotifications = (userId) => {
+  return axiosInstance.get(`${NOTIF_URL}/user/${userId}/unread`).then(res => res.data);
+};
+
 export const markNotificationRead = (id) => {
-  return axios.put(`${API_URL}/notifications/${id}/read`, {}, getAuthHeaders());
+  return axiosInstance.put(`${NOTIF_URL}/${id}/read`).then(res => res.data);
 };
 
-// 🔹 تعليم جميع الإشعارات كمقروءة لمستخدم معين
 export const markAllNotificationsRead = (userId) => {
-  return axios.put(`${API_URL}/notifications/user/${userId}/read-all`, {}, getAuthHeaders());
+  return axiosInstance.put(`${NOTIF_URL}/user/${userId}/read-all`).then(res => res.data);
 };
 
-// 🔹 إنشاء إشعار جديد
 export const createNotification = (data) => {
-  return axios.post(`${API_URL}/notifications`, data, getAuthHeaders());
+  return axiosInstance.post(NOTIF_URL, data).then(res => res.data);
 };
 
-// 🔹 حذف إشعار
 export const deleteNotification = (id) => {
-  return axios.delete(`${API_URL}/notifications/${id}`, getAuthHeaders());
+  return axiosInstance.delete(`${NOTIF_URL}/${id}`).then(res => res.data);
 };
 
-// 🔹 جلب عدد الإشعارات غير المقروءة
 export const getUnreadNotificationsCount = (userId) => {
-  return axios.get(`${API_URL}/notifications/user/${userId}/unread-count`, getAuthHeaders());
+  return axiosInstance.get(`${NOTIF_URL}/user/${userId}/unread-count`).then(res => res.data);
 };
