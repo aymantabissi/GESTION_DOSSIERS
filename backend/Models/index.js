@@ -1,4 +1,60 @@
-const sequelize = require('../Config/db');
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
+
+// ============= DATABASE CONNECTION CONFIGURATION =============
+let sequelize;
+
+if (process.env.DATABASE_URL) {
+  // Production - use DATABASE_URL from Render
+  console.log('🚀 Connecting to production database...');
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
+    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
+  });
+} else {
+  // Development - use individual environment variables
+  console.log('🏠 Connecting to local database...');
+  sequelize = new Sequelize(
+    process.env.DB_NAME || 'gestiondb',
+    process.env.DB_USER || 'postgres',
+    process.env.DB_PASSWORD || 'admin',
+    {
+      host: process.env.DB_HOST || 'localhost',
+      port: process.env.DB_PORT || 5432,
+      dialect: 'postgres',
+      logging: false,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
+    }
+  );
+}
+
+// Test the connection
+sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Database connection established successfully');
+  })
+  .catch(err => {
+    console.error('❌ Unable to connect to database:', err.message);
+  });
+
+// ============= IMPORT ALL MODELS =============
 
 // Import tous les modèles
 const User = require('./User');
@@ -21,6 +77,7 @@ Profile.hasMany(User, {
   foreignKey: 'id_profile', 
   as: 'users' 
 });
+
 // Relation obligatoire: Notification → User
 Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
@@ -49,7 +106,6 @@ ProfilePermission.belongsTo(Permission, {
   as: 'permission'   // ✅ alias هنا
 });
 ProfilePermission.belongsTo(Profile, { foreignKey: 'id_profile', as: 'profile' });
-
 
 // ============= RELATIONS DIVISIONS/SERVICES =============
 
@@ -134,7 +190,6 @@ Dossier.hasMany(SituationDossier, {
   onDelete: 'CASCADE',   
   hooks: true
 });
-
 
 // ============= RELATIONS DOSSIER_INSTRUCTIONS =============
 
