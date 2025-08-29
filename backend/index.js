@@ -21,7 +21,9 @@ const userRoutes = require('./Routes/userRoutes');
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000',  // React app
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-vercel-app-name.vercel.app']
+    : ['http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
