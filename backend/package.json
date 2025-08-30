@@ -7,8 +7,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "dotenv -e .env.local -- nodemon server.js",
-  "start": "dotenv -e .env.production -- node server.js",
+  "dev": "dotenv -e .env.local -- nodemon index.js",
+  "start": "dotenv -e .env.production -- node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
