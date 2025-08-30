@@ -1,8 +1,9 @@
 import axiosInstance from '../utils/axiosInstance';
 
-const NOTIF_URL = '/notifications';
+const NOTIF_URL = '/notifications';  // Add /api here
 
 export const getNotifications = (userId) => {
+  console.log('Full URL will be:', axiosInstance.defaults.baseURL + `/api/notifications/user/${userId}`);
   return axiosInstance.get(`${NOTIF_URL}/user/${userId}`).then(res => res.data);
 };
 

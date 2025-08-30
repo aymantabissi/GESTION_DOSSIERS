@@ -2,8 +2,8 @@
 const User = require('../Models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-
+const Notification = require('../Models/Notification');
+const { sequelize } = require('../Models'); // Add this import
 
 // LOGIN
 exports.loginUser = async (req, res) => {
@@ -53,7 +53,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-
 // GET all users
 exports.getAllUsers = async (req, res) => {
   try {
@@ -97,8 +96,6 @@ exports.createUser = async (req, res) => {
 };
 
 // UPDATE user
-// UPDATE user
-// UPDATE user
 exports.updateUser = async (req, res) => {
   try {
     const { id_user } = req.params;
@@ -133,18 +130,34 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-
-// DELETE user
+// DELETE user - Fixed with proper export
 exports.deleteUser = async (req, res) => {
-  try {
-    const { id_user } = req.params;
-    const user = await User.findByPk(id_user);
-    if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' });
+  const { id_user } = req.params;
+  const transaction = await sequelize.transaction();
 
-    await user.destroy();
-    res.json({ message: 'Utilisateur supprimé avec succès' });
+  try {
+    // First, delete all notifications for this user
+    await Notification.destroy({
+      where: { user_id: id_user },
+      transaction
+    });
+
+    // Then delete the user
+    const result = await User.destroy({
+      where: { id_user },
+      transaction
+    });
+
+    await transaction.commit();
+
+    if (result === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    await transaction.rollback();
+    console.error('Delete user error:', error);
+    res.status(500).json({ error: error.message });
   }
 };

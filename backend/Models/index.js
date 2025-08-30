@@ -62,7 +62,7 @@ const Profile = require('./Profile');
 const Permission = require('./Permission');
 const ProfilePermission = require('./ProfilePermission');
 const Division = require('./Division');
-const Notification = require('./Notification ');
+const Notification = require('./Notification');
 const Service = require('./Service');
 const Dossier = require('./Dossier');
 const Instruction = require('./Instruction');
@@ -79,9 +79,15 @@ Profile.hasMany(User, {
 });
 
 // Relation obligatoire: Notification → User
-Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
-
+Notification.belongsTo(User, { 
+  foreignKey: 'user_id', 
+  as: 'user' 
+});User.hasMany(Notification, { 
+  foreignKey: 'user_id', 
+  as: 'notifications',
+  onDelete: 'CASCADE',
+  hooks: true
+});
 // Optional: si t7eb tie notifications l dossiers / instructions
 Notification.belongsTo(Dossier, { foreignKey: 'dossier_id', as: 'dossier', allowNull: true });
 Dossier.hasMany(Notification, { foreignKey: 'dossier_id', as: 'notifications' });

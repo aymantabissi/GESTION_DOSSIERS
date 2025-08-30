@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance'; // Import your configured axios instance
 import { useTranslation } from 'react-i18next';
 
 const UserForm = ({ user, onSuccess, darkMode = false }) => {
@@ -26,15 +26,13 @@ const UserForm = ({ user, onSuccess, darkMode = false }) => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
       const payload = { username, email, password: password || undefined, id_profile: idProfile };
 
       if (user) {
-        await axios.put(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/users/${user.id_user}`, payload, config);
+        await axiosInstance.put(`/users/${user.id_user}`, payload);
         toast.success(t('users.updated'));
       } else {
-        await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/users`, payload, config);
+        await axiosInstance.post('/users', payload);
         toast.success(t('users.created'));
       }
 

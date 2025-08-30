@@ -7,7 +7,7 @@ import UserForm from './UserForm';
 import ConfirmModal from '../compenents/ConfirmModal';
 import PaginationComponent from '../compenents/PaginationComponent';
 import { useTranslation } from 'react-i18next';
-
+import axiosInstance from '../utils/axiosInstance';
 const UsersPage = ({ darkMode = false }) => {
   const { t } = useTranslation();
 
@@ -21,21 +21,17 @@ const UsersPage = ({ darkMode = false }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/users`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUsers(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      toast.error(err.response?.data?.message || t('users.loadError'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const fetchUsers = async () => {
+  setLoading(true);
+  try {
+    const res = await axiosInstance.get('/users'); // ✅ prepend /api here
+    setUsers(Array.isArray(res.data) ? res.data : []);
+  } catch (err) {
+    toast.error(err.response?.data?.message || t('users.loadError'));
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => { fetchUsers(); }, []);
 
   // 🔹 Filtered users
@@ -55,20 +51,19 @@ const UsersPage = ({ darkMode = false }) => {
     setShowConfirm(true);
   };
 
-  const handleConfirmDelete = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/users/${deleteId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success(t('users.deleted'));
-      setShowConfirm(false);
-      setDeleteId(null);
-      fetchUsers();
-    } catch (err) {
-      toast.error(err.response?.data?.message || t('users.serverError'));
-    }
-  };
+const handleConfirmDelete = async () => {
+  try {
+ 
+    
+    await axiosInstance.delete(`/users/${deleteId}`); // ✅ token & baseURL handled automatically
+    toast.success(t('users.deleted'));
+    setShowConfirm(false);
+    setDeleteId(null);
+    fetchUsers(); // refresh the list
+  } catch (err) {
+    toast.error(err.response?.data?.message || t('users.serverError'));
+  }
+};
 
   const tableHeaderBg = darkMode ? '#2c2c2c' : '#e9ecef';
   const tableBg = darkMode ? '#1c1c1c' : '#fff';

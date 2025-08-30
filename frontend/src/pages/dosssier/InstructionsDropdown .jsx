@@ -18,9 +18,9 @@ const InstructionsDropdown = ({ instructions, darkMode }) => {
         {instructions.length} instruction(s)
       </Dropdown.Toggle>
       <Dropdown.Menu style={{ backgroundColor: darkMode ? '#2a2a2a' : '#fff', color: darkMode ? '#fff' : '#000' }}>
-        {instructions.map(di => (
+        {instructions.map((di, index) => (
           <Dropdown.Item 
-            key={di.num_dossier_instruction} 
+            key={di.num_dossier_instruction || di.id || index} 
             style={{ backgroundColor: darkMode ? '#2a2a2a' : '#fff', color: darkMode ? '#fff' : '#000' }}
           >
             <div>
