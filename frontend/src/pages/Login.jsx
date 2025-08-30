@@ -15,10 +15,13 @@ const Login = () => {
 const handleLogin = async (e) => {
   e.preventDefault();
   try {
-    console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
+console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
+    console.log('Axios baseURL:', axiosInstance.defaults.baseURL);
+    console.log('Full URL will be:', axiosInstance.defaults.baseURL + '/users/login');
 
-const res = await axiosInstance.post('/users/login', { email, password });
+    const res = await axiosInstance.post('/users/login', { email, password });
     console.log('Login response:', res.data); 
+
 
     // Store token
     localStorage.setItem('token', res.data.token);
