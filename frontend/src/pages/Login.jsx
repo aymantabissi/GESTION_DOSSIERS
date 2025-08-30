@@ -17,7 +17,7 @@ const handleLogin = async (e) => {
   try {
     console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
 
-    const res = await axiosInstance.post('/users/login', { email, password });
+const res = await axiosInstance.post('/users/login', { email, password });
     console.log('Login response:', res.data); 
 
     // Store token
