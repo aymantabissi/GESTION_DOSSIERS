@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast, Slide } from 'react-toastify';
@@ -12,60 +11,28 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
-    console.log('Axios baseURL:', axiosInstance.defaults.baseURL);
-    console.log('Full URL will be:', axiosInstance.defaults.baseURL + '/users/login');
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axiosInstance.post('/users/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      if (res.data.user) localStorage.setItem('user', JSON.stringify(res.data.user));
 
-    const res = await axiosInstance.post('/users/login', { email, password });
-    console.log('Login response:', res.data); 
-
-
-    // Store token
-    localStorage.setItem('token', res.data.token);
-
-    // Store user data
-    if (res.data.user) {
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      toast.success('Login successful!', { transition: Slide });
+      setTimeout(() => navigate('/dashboard'), 3000);
+    } catch (err) {
+      toast.error('Login failed: ' + (err.response?.data?.message || 'Server error'), { transition: Slide });
     }
-
-    toast.success('Login successful!', {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      transition: Slide
-    });
-
-    setTimeout(() => navigate('/dashboard'), 3000);
-  } catch (err) {
-    toast.error('Login failed: ' + (err.response?.data?.message || 'Server error'), {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      transition: Slide
-    });
-  }
-};
-
+  };
 
   return (
-    <div 
-      className="d-flex justify-content-center align-items-center vh-100" 
-      style={{ backgroundColor: '#f0f2f5' }}
-    >
+    <div className="container-fluid d-flex justify-content-center align-items-center min-vh-100" style={{ backgroundColor: '#f0f2f5' }}>
       <ToastContainer />
-      <div className="card shadow-lg rounded-4" style={{ width: '360px' }}>
+      <div className="card shadow-lg rounded-4 w-100" style={{ maxWidth: '400px' }}>
+        {/* Header */}
         <div className="card-header bg-primary text-white text-center py-3 rounded-top-4">
           <div className="d-flex justify-content-center mb-2">
-            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center" 
+            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center"
                  style={{ width: '60px', height: '60px' }}>
               <img 
                 src={minster} 
@@ -78,9 +45,11 @@ console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
               />
             </div>
           </div>
-          <h5 className="mb-0">Provincial Portal</h5>
+          <h5 className="mb-0 fs-6 fs-md-5">Provincial Portal</h5>
         </div>
-        <div className="card-body p-4">
+
+        {/* Body */}
+        <div className="card-body p-3 p-md-4">
           <h6 className="card-title text-center mb-3">Secure Login</h6>
           <form onSubmit={handleLogin}>
             <div className="mb-3">
@@ -111,6 +80,8 @@ console.log('Frontend API URL:', process.env.REACT_APP_API_URL);
             <a href="#help" className="small text-decoration-none">Need help?</a>
           </div>
         </div>
+
+        {/* Footer */}
         <div className="card-footer text-center py-2">
           <small className="text-muted">© {new Date().getFullYear()} Provincial Services</small>
         </div>

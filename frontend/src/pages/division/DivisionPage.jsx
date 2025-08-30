@@ -1,12 +1,13 @@
 // src/pages/division/DivisionPage.jsx
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Form, Spinner } from "react-bootstrap";
+import { Table, Button, Modal, Form, Spinner, Row, Col, Card, Badge } from "react-bootstrap";
 import { createDivision, updateDivision, deleteDivision } from "../../api/divisionApi";
 import { getDivisions } from "../../api/dossierApi";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../compenents/ConfirmModal";
 import { useTranslation } from "react-i18next";
 import PaginationComponent from "../../compenents/PaginationComponent";
+import renderMobileCards from "./renderMobileCards";
 
 const DivisionPage = ({ darkMode }) => {
   const [divisions, setDivisions] = useState([]);
@@ -101,6 +102,71 @@ const DivisionPage = ({ darkMode }) => {
     }
   };
 
+  // Render mobile card view for small screens
+  const renderMobileCards = () => (
+    <div className="d-md-none">
+      {paginatedDivisions.length > 0 ? (
+        paginatedDivisions.map((d, index) => (
+          <Card 
+            key={d.id_division || d.id} 
+            className={`mb-3 ${darkMode ? "bg-secondary text-light border-secondary" : ""}`}
+          >
+            <Card.Body>
+              <Row className="align-items-center">
+                <Col xs={8}>
+                  <div className="mb-2">
+                    <strong className="d-block">{t('divisionPage.table.id', 'ID')}: </strong>
+                    <span>{(currentPage - 1) * pageSize + index + 1}</span>
+                  </div>
+                  <div className="mb-2">
+                    <strong className="d-block">{t('divisionPage.table.nameFr', 'Nom FR')}: </strong>
+                    <span style={{ direction: 'ltr', textAlign: 'left' }}>
+                      {d.lib_division_fr || "-"}
+                    </span>
+                  </div>
+                  <div className="mb-2">
+                    <strong className="d-block">{t('divisionPage.table.nameAr', 'Nom AR')}: </strong>
+                    <span style={{ direction: 'rtl', textAlign: 'right' }}>
+                      {d.lib_division_ar || "-"}
+                    </span>
+                  </div>
+                </Col>
+                <Col xs={4} className="text-end">
+                  <div className="d-flex flex-column gap-2">
+                    <Button 
+                      variant={darkMode ? "outline-warning" : "warning"} 
+                      size="sm" 
+                      onClick={() => handleShowModal(d)}
+                      className="w-100"
+                    >
+                      <span className="d-none d-sm-inline">{t('divisionPage.buttons.edit', '✏️ Modifier')}</span>
+                      <span className="d-sm-none">✏️</span>
+                    </Button>
+                    <Button 
+                      variant={darkMode ? "outline-danger" : "danger"} 
+                      size="sm" 
+                      onClick={() => handleDeleteClick(d.id_division || d.id)}
+                      className="w-100"
+                    >
+                      <span className="d-none d-sm-inline">{t('divisionPage.buttons.delete', '🗑️ Supprimer')}</span>
+                      <span className="d-sm-none">🗑️</span>
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        ))
+      ) : (
+        <Card className={`text-center ${darkMode ? "bg-secondary text-light border-secondary" : ""}`}>
+          <Card.Body>
+            <p className="mb-0">{t('divisionPage.noData', 'Aucune division trouvée')}</p>
+          </Card.Body>
+        </Card>
+      )}
+    </div>
+  );
+
   if (loading) return (
     <div className={`text-center p-4 ${darkMode ? "text-light bg-dark" : ""}`} style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
       <Spinner animation="border" />
@@ -110,81 +176,127 @@ const DivisionPage = ({ darkMode }) => {
 
   return (
     <div 
-      className={`container mt-4 ${darkMode ? "text-light bg-dark" : ""}`} 
+      className={`container-fluid px-3 px-md-4 mt-4 ${darkMode ? "text-light bg-dark" : ""}`} 
       style={{ direction: isRTL ? 'rtl' : 'ltr', minHeight: '100vh' }}
     >
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>{t('divisionPage.title', 'Gestion des Divisions')}</h2>
-        <Button 
-          className={darkMode ? "btn-outline-light" : "btn-primary"} 
-          onClick={() => handleShowModal()}
-        >
-          {t('divisionPage.newDivision', '+ Nouvelle Division')}
-        </Button>
-      </div>
+      {/* Header Section */}
+      <Row className="mb-3 align-items-center">
+        <Col xs={12} md={8} lg={9}>
+          <h2 className="mb-2 mb-md-0">{t('divisionPage.title', 'Gestion des Divisions')}</h2>
+        </Col>
+        <Col xs={12} md={4} lg={3} className="text-md-end">
+          <Button 
+            className={`w-100 w-md-auto ${darkMode ? "btn-outline-light" : "btn-primary"}`}
+            onClick={() => handleShowModal()}
+          >
+            <span className="d-inline d-sm-none">+</span>
+            <span className="d-none d-sm-inline">{t('divisionPage.newDivision', '+ Nouvelle Division')}</span>
+          </Button>
+        </Col>
+      </Row>
 
-      <Form.Group className="mb-3">
-        <Form.Control 
-          type="text" 
-          placeholder={t('divisionPage.search.placeholder', 'Recherche...')} 
-          value={searchTerm} 
-          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-        />
-      </Form.Group>
+      {/* Search Section */}
+      <Row className="mb-3">
+        <Col xs={12} md={8} lg={6}>
+          <Form.Group>
+            <Form.Control 
+              type="text" 
+              placeholder={t('divisionPage.search.placeholder', 'Recherche...')} 
+              value={searchTerm} 
+              onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+              className={darkMode ? "bg-secondary text-light border-secondary" : ""}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
-      <div className="table-responsive">
-        <Table striped bordered hover className={darkMode ? "table-dark" : ""}>
-          <thead>
-            <tr>
-              <th>{t('divisionPage.table.id', 'ID')}</th>
-              <th>{t('divisionPage.table.nameFr', 'Nom FR')}</th>
-              <th>{t('divisionPage.table.nameAr', 'Nom AR')}</th>
-              <th className="text-center">{t('divisionPage.table.actions', 'Actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedDivisions.length > 0 ? (
-              paginatedDivisions.map((d, index) => (
-                <tr key={d.id_division || d.id}>
-                  <td>{(currentPage - 1) * pageSize + index + 1}</td>
-                  <td style={{ direction: 'ltr', textAlign: 'left' }}>{d.lib_division_fr || "-"}</td>
-                  <td style={{ direction: 'rtl', textAlign: 'right' }}>{d.lib_division_ar || "-"}</td>
-                  <td className="text-center">
-                    <Button 
-                      variant={darkMode ? "outline-warning" : "warning"} 
-                      size="sm" 
-                      className={isRTL ? "ms-1" : "me-1"}
-                      onClick={() => handleShowModal(d)}
-                    >
-                      {t('divisionPage.buttons.edit', '✏️ Modifier')}
-                    </Button>
-                    <Button 
-                      variant={darkMode ? "outline-danger" : "danger"} 
-                      size="sm" 
-                      onClick={() => handleDeleteClick(d.id_division || d.id)}
-                    >
-                      {t('divisionPage.buttons.delete', '🗑️ Supprimer')}
-                    </Button>
+      {/* Desktop Table View - Hidden on mobile */}
+      <div className="d-none d-md-block">
+        <div className="table-responsive">
+          <Table striped bordered hover className={darkMode ? "table-dark" : ""}>
+            <thead>
+              <tr>
+                <th className="text-center" style={{ width: '10%' }}>
+                  {t('divisionPage.table.id', 'ID')}
+                </th>
+                <th style={{ width: '35%' }}>
+                  {t('divisionPage.table.nameFr', 'Nom FR')}
+                </th>
+                <th style={{ width: '35%' }}>
+                  {t('divisionPage.table.nameAr', 'Nom AR')}
+                </th>
+                <th className="text-center" style={{ width: '20%' }}>
+                  {t('divisionPage.table.actions', 'Actions')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedDivisions.length > 0 ? (
+                paginatedDivisions.map((d, index) => (
+                  <tr key={d.id_division || d.id}>
+                    <td className="text-center align-middle">
+                      {(currentPage - 1) * pageSize + index + 1}
+                    </td>
+                    <td className="align-middle" style={{ direction: 'ltr', textAlign: 'left' }}>
+                      <div className="text-truncate" title={d.lib_division_fr}>
+                        {d.lib_division_fr || "-"}
+                      </div>
+                    </td>
+                    <td className="align-middle" style={{ direction: 'rtl', textAlign: 'right' }}>
+                      <div className="text-truncate" title={d.lib_division_ar}>
+                        {d.lib_division_ar || "-"}
+                      </div>
+                    </td>
+                    <td className="text-center align-middle">
+                      <div className="d-flex justify-content-center gap-2 flex-wrap">
+                        <Button 
+                          variant={darkMode ? "outline-warning" : "warning"} 
+                          size="sm" 
+                          onClick={() => handleShowModal(d)}
+                          className="d-flex align-items-center"
+                        >
+                          <span className="d-none d-lg-inline">{t('divisionPage.buttons.edit', '✏️ Modifier')}</span>
+                          <span className="d-lg-none">✏️</span>
+                        </Button>
+                        <Button 
+                          variant={darkMode ? "outline-danger" : "danger"} 
+                          size="sm" 
+                          onClick={() => handleDeleteClick(d.id_division || d.id)}
+                          className="d-flex align-items-center"
+                        >
+                          <span className="d-none d-lg-inline">{t('divisionPage.buttons.delete', '🗑️ Supprimer')}</span>
+                          <span className="d-lg-none">🗑️</span>
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center py-4">
+                    {t('divisionPage.noData', 'Aucune division trouvée')}
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center py-4">
-                  {t('divisionPage.noData', 'Aucune division trouvée')}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
+              )}
+            </tbody>
+          </Table>
+        </div>
       </div>
 
-      <PaginationComponent
-        totalItems={filteredDivisions.length}
-        pageSize={pageSize}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+      {/* Mobile Card View - Visible only on mobile */}
+      {renderMobileCards()}
+
+      {/* Pagination */}
+      <Row className="mt-4">
+        <Col xs={12} className="d-flex justify-content-center">
+          <PaginationComponent
+            totalItems={filteredDivisions.length}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </Col>
+      </Row>
 
       {/* Modal */}
       <Modal 
@@ -192,9 +304,11 @@ const DivisionPage = ({ darkMode }) => {
         onHide={() => setShowModal(false)} 
         data-bs-theme={darkMode ? "dark" : ""}
         dir={isRTL ? 'rtl' : 'ltr'}
+        size="lg"
+        centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>
+          <Modal.Title className="w-100">
             {editingDivision ? 
               t('divisionPage.modal.editTitle', 'Modifier Division') : 
               t('divisionPage.modal.newTitle', 'Nouvelle Division')
@@ -203,43 +317,55 @@ const DivisionPage = ({ darkMode }) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>{t('divisionPage.form.nameFr', 'Nom FR')}</Form.Label>
-              <Form.Control 
-                type="text" 
-                value={nomFr} 
-                onChange={(e) => setNomFr(e.target.value)} 
-                className={darkMode ? "bg-secondary text-light" : ""}
-                dir="ltr"
-                style={{ textAlign: 'left' }}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>{t('divisionPage.form.nameAr', 'Nom AR')}</Form.Label>
-              <Form.Control 
-                type="text" 
-                value={nomAr} 
-                onChange={(e) => setNomAr(e.target.value)} 
-                className={darkMode ? "bg-secondary text-light" : ""}
-                dir="rtl"
-                style={{ textAlign: 'right' }}
-              />
-            </Form.Group>
+            <Row>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>{t('divisionPage.form.nameFr', 'Nom FR')}</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    value={nomFr} 
+                    onChange={(e) => setNomFr(e.target.value)} 
+                    className={darkMode ? "bg-secondary text-light border-secondary" : ""}
+                    dir="ltr"
+                    style={{ textAlign: 'left' }}
+                    placeholder={t('divisionPage.form.nameFrPlaceholder', 'Entrez le nom en français')}
+                  />
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>{t('divisionPage.form.nameAr', 'Nom AR')}</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    value={nomAr} 
+                    onChange={(e) => setNomAr(e.target.value)} 
+                    className={darkMode ? "bg-secondary text-light border-secondary" : ""}
+                    dir="rtl"
+                    style={{ textAlign: 'right' }}
+                    placeholder={t('divisionPage.form.nameArPlaceholder', 'أدخل الاسم بالعربية')}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
           </Form>
         </Modal.Body>
-        <Modal.Footer style={{ justifyContent: isRTL ? 'flex-start' : 'flex-end' }}>
-          <Button 
-            variant={darkMode ? "btn-outline-light" : "secondary"} 
-            onClick={() => setShowModal(false)}
-          >
-            {t('divisionPage.buttons.cancel', 'Annuler')}
-          </Button>
-          <Button 
-            variant={darkMode ? "btn-outline-primary" : "primary"} 
-            onClick={handleSave}
-          >
-            {t('divisionPage.buttons.save', 'Enregistrer')}
-          </Button>
+        <Modal.Footer className="d-flex flex-column flex-sm-row gap-2">
+          <div className="d-flex gap-2 w-100 w-sm-auto" style={{ justifyContent: isRTL ? 'flex-start' : 'flex-end' }}>
+            <Button 
+              variant={darkMode ? "outline-light" : "secondary"} 
+              onClick={() => setShowModal(false)}
+              className="flex-fill flex-sm-grow-0"
+            >
+              {t('divisionPage.buttons.cancel', 'Annuler')}
+            </Button>
+            <Button 
+              variant={darkMode ? "outline-primary" : "primary"} 
+              onClick={handleSave}
+              className="flex-fill flex-sm-grow-0"
+            >
+              {t('divisionPage.buttons.save', 'Enregistrer')}
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
 
@@ -253,6 +379,6 @@ const DivisionPage = ({ darkMode }) => {
       />
     </div>
   );
-};
 
+}
 export default DivisionPage;

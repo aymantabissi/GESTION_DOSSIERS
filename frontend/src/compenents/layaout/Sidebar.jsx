@@ -36,7 +36,6 @@ const Sidebar = ({ isCollapsed: parentCollapsed, onToggle, darkMode }) => {
   const sidebarBg = darkMode ? '#1f1f1f' : '#f8f9fa';
   const activeBg = '#0d6efd';
   const textColor = darkMode ? 'white' : 'black';
-  const hoverBg = darkMode ? '#333' : '#e9ecef';
 
   return (
     <div
@@ -52,7 +51,8 @@ const Sidebar = ({ isCollapsed: parentCollapsed, onToggle, darkMode }) => {
         borderRight: !isRTL ? (darkMode ? '1px solid #444' : '1px solid #ddd') : "none",
         borderLeft: isRTL ? (darkMode ? '1px solid #444' : '1px solid #ddd') : "none",
         backgroundColor: sidebarBg,
-        direction: isRTL ? "rtl" : "ltr"
+        direction: isRTL ? "rtl" : "ltr",
+        overflowY: "auto"
       }}
     >
       <nav className="flex-grow-1 p-2">
@@ -71,8 +71,24 @@ const Sidebar = ({ isCollapsed: parentCollapsed, onToggle, darkMode }) => {
                   color: isActive ? 'white' : textColor,
                   borderRadius: '0.5rem',
                   transition: 'all 0.2s',
+                  position: "relative"
                 }}
               >
+                {/* Active indicator */}
+                {isActive && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "10%",
+                      bottom: "10%",
+                      [isRTL ? "right" : "left"]: "0",
+                      width: "4px",
+                      borderRadius: "2px",
+                      backgroundColor: "white"
+                    }}
+                  />
+                )}
+
                 <i className={`bi ${item.icon} fs-5 ${isCollapsed ? '' : (isRTL ? 'ms-3' : 'me-3')}`}></i>
                 {!isCollapsed && <span className="fw-medium">{item.label}</span>}
               </button>
@@ -95,6 +111,7 @@ const Sidebar = ({ isCollapsed: parentCollapsed, onToggle, darkMode }) => {
         </ul>
       </nav>
 
+      {/* Collapse button */}
       <div className="p-2 border-top" style={{ borderColor: darkMode ? '#444' : '#ddd' }}>
         <button
           className="btn w-100"
@@ -107,7 +124,10 @@ const Sidebar = ({ isCollapsed: parentCollapsed, onToggle, darkMode }) => {
             transition: 'all 0.3s'
           }}
         >
-          {isCollapsed ? (isRTL ? '←' : '→') : (isRTL ? '→' : '←')}
+          {isCollapsed
+            ? <i className={`bi ${isRTL ? "bi-chevron-double-left" : "bi-chevron-double-right"}`}></i>
+            : <i className={`bi ${isRTL ? "bi-chevron-double-right" : "bi-chevron-double-left"}`}></i>
+          }
         </button>
       </div>
 
