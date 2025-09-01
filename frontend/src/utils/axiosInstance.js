@@ -5,7 +5,7 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const axiosInstance = axios.create({
-  baseURL: `${API_BASE_URL}/api`, // Add /api here since it's not in REACT_APP_API_URL anymore
+  baseURL: API_BASE_URL, // Add /api here since it's not in REACT_APP_API_URL anymore
   withCredentials: true,
   timeout: 10000, // Add timeout for better error handling
   headers: {
