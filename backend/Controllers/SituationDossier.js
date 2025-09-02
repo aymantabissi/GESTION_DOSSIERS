@@ -1,4 +1,3 @@
-// controllers/situationController.js
 const { SituationDossier, Dossier, User , Notification } = require('../Models');
 
 // Ajouter une situation (changer état du dossier)
@@ -28,7 +27,7 @@ exports.addSituation = async (req, res) => {
 
     console.log(`✅ Situation created:`, situation.toJSON());
 
-    // 🔔 Créer notification pour le propriétaire du dossier (si ce n'est pas lui qui fait la modification)
+    //  Créer notification pour le propriétaire du dossier (si ce n'est pas lui qui fait la modification)
     if (dossier.id_user && dossier.id_user !== userId) {
       try {
         await Notification.create({
@@ -47,7 +46,7 @@ exports.addSituation = async (req, res) => {
       }
     }
 
-    // 🔔 Optionnel: Notifier tous les utilisateurs qui ont travaillé sur ce dossier
+    //  Optionnel: Notifier tous les utilisateurs qui ont travaillé sur ce dossier
     try {
       const usersWhoWorkedOnDossier = await SituationDossier.findAll({
         where: { num_dossier },

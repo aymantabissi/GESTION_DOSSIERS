@@ -26,7 +26,7 @@ app.use(express.json());
 // CORS configuration
 const allowedOrigins = process.env.NODE_ENV === 'production' 
   ? [
-      'https://gestion-dossiers-66z6.vercel.app' // ✅ هادي هي الصحيحة
+      'https://gestion-dossiers-66z6.vercel.app' 
     ]
   : ['http://localhost:3000'];
 

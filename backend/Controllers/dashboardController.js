@@ -4,30 +4,30 @@ const { Dossier, SituationDossier, Division, Service } = require('../Models');
 exports.getDashboardStats = async (req, res) => {
   try {
     const userId = req.user.id_user;
-    const userProfile = req.user.Profile?.name;   // جاي من include ديال Profile فـ authMiddleware
+    const userProfile = req.user.Profile?.name;   // authMiddleware includ dyal auth midlware
     const userDivision = req.user.id_division;
     const userService = req.user.id_service;
 
     let whereClause = {};
 
-    // ✅ Admin / SG / Gouverneur => كيشوفو جميع الدوسيهات
+    //  Admin / SG / Gouverneur 
     if (["Admin", "SG", "CabinetGouv"].includes(userProfile)) {
       whereClause = {};
     }
-    // ✅ Chef de Division
+    //  Chef de Division
     else if (userProfile === "Chef") {
       whereClause = { id_division: userDivision };
     }
-    // ✅ Chef de Service
+    //  Chef de Service
     else if (userProfile === "ChefService") {
       whereClause = { id_service: userService };
     }
-    // ✅ Fonctionnaire عادي → غير ديالو
+    //  Fonctionnaire  
     else {
       whereClause = { id_user: userId };
     }
 
-    // 🔹 ربط جميع الدوسيهات مع آخر وضعية
+    //  associer all dossier with  situation
     const dossiers = await Dossier.findAll({
       where: whereClause,
       include: [
@@ -37,13 +37,13 @@ exports.getDashboardStats = async (req, res) => {
           model: SituationDossier,
           as: 'situations',
           separate: true,
-          limit: 1, // آخر وضعية
+          limit: 1, 
           order: [['date_situation', 'DESC']]
         }
       ]
     });
 
-    // 📊 إحصائيات
+    // statistic
     const stats = {
       totalDossiers: dossiers.length,
       dossiersEnCours: 0,
@@ -58,7 +58,7 @@ exports.getDashboardStats = async (req, res) => {
       else if (dernierEtat === 'en retard') stats.dossiersEnRetard++;
     });
 
-    // 📌 توزيع حسب division و service
+    // repation division و service
     const repartition = { parDivision: {}, parService: {} };
     dossiers.forEach(d => {
       const div = d.division?.lib_division_fr || 'N/A';
@@ -67,12 +67,12 @@ exports.getDashboardStats = async (req, res) => {
       repartition.parService[serv] = (repartition.parService[serv] || 0) + 1;
     });
 
-    // 🚨 Alertes : دسات متأخرين
+    // ossier les en reard 
     const alertes = dossiers.filter(
       d => d.situations[0]?.libelle_situation?.toLowerCase() === 'en retard'
     );
 
-    // 🆕 دسات مضافين جداد
+    // nouveau
     const dossiersRecents = dossiers
       .sort((a, b) => new Date(b.date_creation) - new Date(a.date_creation))
       .slice(0, 5);

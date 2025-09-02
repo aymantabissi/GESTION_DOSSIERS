@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { User, Profile, Permission, ProfilePermission } = require('../Models');
 
-// Middleware للتحقق من JWT وتضمين بيانات المستخدم
 const authMiddleware = () => {
   return async (req, res, next) => {
     try {
@@ -18,7 +17,7 @@ const authMiddleware = () => {
         return res.status(403).json({ message: 'Invalid token' });
       }
 
-      // Load user with Profile and Permissions
+      //ujibbb user bi findbypk m3a profile o permissions
       const user = await User.findByPk(decoded.id_user, {
         include: [
           { 

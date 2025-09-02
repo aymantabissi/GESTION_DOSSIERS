@@ -1,13 +1,14 @@
-const { sequelize, Profile, Permission, ProfilePermission } = require('../Models');
+const sequelize = require('../Config/db'); // استورد connection المحلي
+const { Profile, Permission, ProfilePermission } = require('../Models'); // adjust path
 
 const setupRolesPermissions = async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Connected to Render database successfully');
+    console.log('✅ Connected to local database successfully');
 
-    await sequelize.sync({ alter: true }); // تحديث الجداول إذا محتاج
+    await sequelize.sync({ alter: true });
 
-    // === Profiles ===
+    // Profiles
     const profilesData = [
       { id_profile: 1, name: 'Admin', description: 'Super admin' },
       { id_profile: 2, name: 'Chef', description: 'Chef de Division/Service' },
@@ -17,11 +18,9 @@ const setupRolesPermissions = async () => {
       { id_profile: 6, name: 'Gouv', description: 'Gouverneur' }
     ];
 
-    for (const p of profilesData) {
-      await Profile.upsert(p);
-    }
+    for (const p of profilesData) await Profile.upsert(p);
 
-    // === Permissions ===
+    // Permissions
     const permissionsData = [
       { code_name: 'CREATE_DOSSIER', name: 'Créer dossier' },
       { code_name: 'VIEW_DOSSIERS', name: 'Voir dossiers' },
@@ -39,37 +38,19 @@ const setupRolesPermissions = async () => {
       { code_name: 'EDIT_DIVISION', name: 'update les DIVISION' },
       { code_name: 'DELETE_DIVISION', name: 'supprimer les DIVISION' },
       { code_name: 'DELETE_INSTRUCTION', name: 'supprimer les instruction' },
+      { code_name: 'EXPORT_DATA', name: 'ecporter les pdf ' },
     ];
 
-    const permissions = [];
-    for (const perm of permissionsData) {
-      const p = await Permission.upsert(perm);
-      permissions.push(p[0]);
-    }
+    for (const perm of permissionsData) await Permission.upsert(perm);
 
-    // === ProfilePermissions Map ===
+    // ProfilePermissions Map
     const profilePermissionsMap = {
-      Admin: [
-        'CREATE_DOSSIER','VIEW_DOSSIERS','UPDATE_DOSSIER','DELETE_DOSSIER',
-        'VIEW_DOSSIER','VIEW_SERVICE','VIEW_DIVISION','ADD_INSTRUCTION','EDIT_ETAT','DELETE_INSTRUCTION',
-        'VIEW_INSTRUCTION','VIEW_REPORTING','MANAGE_USERS','ADD_DIVISION', 'EDIT_DIVISION', 'DELETE_DIVISION'
-      ],
-      Chef: [
-        'CREATE_DOSSIER','VIEW_DOSSIERS','UPDATE_DOSSIER','DELETE_DOSSIER',
-        'VIEW_DOSSIER','VIEW_SERVICE','VIEW_DIVISION','EDIT_ETAT','ADD_DIVISION', 'EDIT_DIVISION', 'DELETE_DIVISION'
-      ],
-      Gouv: [
-        'ADD_INSTRUCTION','VIEW_REPORTING','VIEW_DOSSIERS','VIEW_INSTRUCTION','DELETE_INSTRUCTION'
-      ],
-      SG: [
-        'ADD_INSTRUCTION','VIEW_REPORTING','VIEW_DOSSIERS','VIEW_INSTRUCTION','DELETE_INSTRUCTION'
-      ],
-      Fonctionnaire: [
-        'VIEW_DOSSIER','VIEW_DOSSIERS','VIEW_INSTRUCTION','VIEW_DIVISION','VIEW_SERVICE','VIEW_REPORTING'
-      ],
-      CabinetGouv: [
-        'VIEW_DOSSIER','VIEW_DOSSIERS','VIEW_INSTRUCTION','VIEW_DIVISION','VIEW_DIVISION','VIEW_REPORTING'
-      ]
+      Admin: ['CREATE_DOSSIER','VIEW_DOSSIERS','UPDATE_DOSSIER','DELETE_DOSSIER','VIEW_DOSSIER','VIEW_SERVICE','VIEW_DIVISION','ADD_INSTRUCTION','EDIT_ETAT','DELETE_INSTRUCTION','VIEW_INSTRUCTION','VIEW_REPORTING','MANAGE_USERS','ADD_DIVISION','EDIT_DIVISION','DELETE_DIVISION','EXPORT_DATA'],
+      Chef: ['CREATE_DOSSIER','VIEW_DOSSIERS','UPDATE_DOSSIER','DELETE_DOSSIER','EXPORT_DATA','VIEW_DOSSIER','VIEW_SERVICE','VIEW_DIVISION','EDIT_ETAT','ADD_DIVISION','EDIT_DIVISION','DELETE_DIVISION'],
+      Gouv: ['ADD_INSTRUCTION','VIEW_REPORTING','VIEW_DOSSIERS','VIEW_INSTRUCTION','DELETE_INSTRUCTION'],
+      SG: ['ADD_INSTRUCTION','VIEW_REPORTING','VIEW_DOSSIERS','VIEW_INSTRUCTION','DELETE_INSTRUCTION'],
+      Fonctionnaire: ['VIEW_DOSSIER','VIEW_DOSSIERS','VIEW_INSTRUCTION','VIEW_DIVISION','VIEW_SERVICE','VIEW_REPORTING'],
+      CabinetGouv: ['VIEW_DOSSIER','VIEW_DOSSIERS','VIEW_INSTRUCTION','VIEW_DIVISION','VIEW_REPORTING']
     };
 
     for (const profile of await Profile.findAll()) {
@@ -77,17 +58,16 @@ const setupRolesPermissions = async () => {
       for (const code_name of allowedPerms) {
         const perm = await Permission.findOne({ where: { code_name } });
         if (perm) {
-          await ProfilePermission.findOrCreate({
-            where: { id_profile: profile.id_profile, id_permission: perm.id_permission }
-          });
+          await ProfilePermission.findOrCreate({ where: { id_profile: profile.id_profile, id_permission: perm.id_permission } });
         }
       }
     }
 
-    console.log('✅ Profiles, Permissions, ProfilePermissions created successfully on Render DB');
+    console.log('✅ Roles and Permissions created successfully locally');
     process.exit(0);
+
   } catch (err) {
-    console.error('❌ Error setting up roles and permissions on Render DB:', err);
+    console.error('❌ Error setting up roles and permissions locally:', err);
     process.exit(1);
   }
 };

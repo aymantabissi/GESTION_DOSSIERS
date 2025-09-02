@@ -35,7 +35,7 @@ function App() {
         pauseOnHover
       />
 
-      {/* 🔹 Wrap all routes with UserProvider */}
+      {/*  Wrap all routes with UserProvider */}
       <UserProvider>
         <Routes>
           {/* Public Route */}

@@ -3,7 +3,7 @@ const { Instruction, User } = require('../Models');
 // Créer une instruction
 exports.createInstruction = async (req, res) => {
   try {
-    const { libelle_instruction, description } = req.body; // 🔥 Added description field
+    const { libelle_instruction, description } = req.body; //  Added description field
     const userId = req.user?.id_user;
     
     console.log("Create instruction request:");

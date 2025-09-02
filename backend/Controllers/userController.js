@@ -56,6 +56,7 @@ exports.loginUser = async (req, res) => {
 // GET all users
 exports.getAllUsers = async (req, res) => {
   try {
+    // ktjib kolchi mn ghir password bi exclude 
     const users = await User.findAll({ attributes: { exclude: ['password'] } });
     res.json(users);
   } catch (error) {
@@ -73,6 +74,7 @@ exports.createUser = async (req, res) => {
 
     const existing = await User.findOne({ where: { email } });
     if (existing) return res.status(400).json({ message: 'Email déjà utilisé' });
+    // hade bcrypt kdire hasheage dyal password 
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -104,6 +106,7 @@ exports.updateUser = async (req, res) => {
     const user = await User.findByPk(id_user);
     if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' });
 
+    // hade bcrypt kdire hasheage dyal password 
     if (password) user.password = await bcrypt.hash(password, 10);
     if (username) user.username = username;
     if (email) user.email = email;
@@ -112,7 +115,7 @@ exports.updateUser = async (req, res) => {
     if (id_service !== undefined) user.id_service = id_service;
     if (is_active !== undefined) user.is_active = is_active;
 
-    // 🔥 Save uploaded photo
+    //  Save uploaded photo
     if (req.file) {
       user.photo = req.file.filename;
     }
@@ -130,7 +133,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// DELETE user - Fixed with proper export
+
 exports.deleteUser = async (req, res) => {
   const { id_user } = req.params;
   const transaction = await sequelize.transaction();

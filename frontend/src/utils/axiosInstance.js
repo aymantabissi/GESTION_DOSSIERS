@@ -1,13 +1,11 @@
-// api/axiosConfig.js (or wherever your axios config is)
 import axios from 'axios';
 
-// ✅ FIXED: Add /api back since REACT_APP_API_URL no longer includes it
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE_URL, // Add /api here since it's not in REACT_APP_API_URL anymore
+  baseURL: API_BASE_URL,
   withCredentials: true,
-  timeout: 10000, // Add timeout for better error handling
+  timeout: 15000, // Increased timeout
   headers: {
     'Content-Type': 'application/json',
   }
@@ -39,13 +37,30 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error(`❌ API Error: ${error.response?.status} ${error.config?.url}`, error.response?.data);
+    const status = error.response?.status || 'NO_RESPONSE';
+    const url = error.config?.url || 'UNKNOWN_URL';
+    const message = error.response?.data?.message || error.message || 'Unknown error';
+    
+    console.error(`❌ API Error: ${status} ${url}`, {
+      message,
+      data: error.response?.data,
+      config: {
+        method: error.config?.method,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL
+      }
+    });
     
     // Handle 401 unauthorized
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
+    }
+    
+    // Handle network errors
+    if (!error.response) {
+      console.error('❌ Network Error: Server might be down or CORS issue');
     }
     
     return Promise.reject(error);

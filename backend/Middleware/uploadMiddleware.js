@@ -4,7 +4,7 @@ const path = require('path');
 
 const uploadDir = path.join(__dirname, '..', 'uploads');
 
-// إنشاء المجلد إذا ما كانش موجود
+// creation dossier if dos not exist
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

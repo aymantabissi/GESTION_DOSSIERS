@@ -3,10 +3,9 @@ const express = require('express');
 const router = express.Router();
 const instructionController = require('../Controllers/instructionController');
 const authMiddleware = require('../Middleware/authMiddleware');
-const permissionMiddleware = require('../Middleware/permissionMiddleware '); // 🔥 FIXED: Removed space
+const permissionMiddleware = require('../Middleware/permissionMiddleware');
 
-// 🔥 CRITICAL: authMiddleware MUST come BEFORE permissionMiddleware
-// because permissionMiddleware needs req.user to be set by authMiddleware
+
 
 router.get('/', 
   authMiddleware(), 
@@ -15,20 +14,20 @@ router.get('/',
 );
 
 router.post('/', 
-  authMiddleware(), // 🔥 FIX: authMiddleware must come first
+  authMiddleware(), 
   permissionMiddleware(['ADD_INSTRUCTION']), 
   instructionController.createInstruction
 );
 
 router.put('/:id', 
   authMiddleware(), 
-  permissionMiddleware(['EDIT_INSTRUCTION']), // Added permission check
+  permissionMiddleware(['EDIT_INSTRUCTION']),
   instructionController.updateInstruction
 );
 
 router.delete('/:id', 
   authMiddleware(), 
-  permissionMiddleware(['DELETE_INSTRUCTION']), // Added permission check
+  permissionMiddleware(['DELETE_INSTRUCTION']),
   instructionController.deleteInstruction
 );
 

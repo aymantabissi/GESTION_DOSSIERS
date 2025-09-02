@@ -1,6 +1,6 @@
 const { Notification } = require('../Models');
 
-// 🔹 جلب جميع الإشعارات لمستخدم (غير مقروءة + مقروءة)
+//  
 exports.getUserNotifications = async (req, res) => {
   const userId = req.params.userId;
   try {
@@ -14,7 +14,7 @@ exports.getUserNotifications = async (req, res) => {
   }
 };
 
-// 🔹 جلب الإشعارات غير المقروءة فقط
+// 
 exports.getUnreadNotifications = async (req, res) => {
   const userId = req.params.userId;
   try {
@@ -31,7 +31,6 @@ exports.getUnreadNotifications = async (req, res) => {
   }
 };
 
-// 🔹 جلب عدد الإشعارات غير المقروءة
 exports.getUnreadCount = async (req, res) => {
   const userId = req.params.userId;
   try {
@@ -47,7 +46,6 @@ exports.getUnreadCount = async (req, res) => {
   }
 };
 
-// 🔹 تعليم الإشعار كمقروء
 exports.markAsRead = async (req, res) => {
   const notificationId = req.params.id;
   try {
@@ -67,7 +65,6 @@ exports.markAsRead = async (req, res) => {
   }
 };
 
-// 🔹 تعليم جميع الإشعارات كمقروءة لمستخدم معين
 exports.markAllAsRead = async (req, res) => {
   const userId = req.params.userId;
   try {
@@ -95,7 +92,6 @@ exports.markAllAsRead = async (req, res) => {
   }
 };
 
-// 🔹 إنشاء إشعار جديد
 exports.createNotification = async (req, res) => {
   const { user_id, type, message, link, title } = req.body;
   try {
@@ -115,7 +111,6 @@ exports.createNotification = async (req, res) => {
   }
 };
 
-// 🔹 حذف إشعار
 exports.deleteNotification = async (req, res) => {
   const notificationId = req.params.id;
   try {
@@ -134,7 +129,6 @@ exports.deleteNotification = async (req, res) => {
   }
 };
 
-// 🔹 حذف جميع الإشعارات المقروءة لمستخدم
 exports.deleteReadNotifications = async (req, res) => {
   const userId = req.params.userId;
   try {

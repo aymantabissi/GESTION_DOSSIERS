@@ -71,14 +71,15 @@ const DossierList = ({ onEdit, onAdd, darkMode }) => {
         />
 
         <Card.Body className="p-4">
-          <SearchFilterBar
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            filterStatus={filterStatus}
-            onFilterChange={setFilterStatus}
-            onReset={handleResetFilters}
-            darkMode={darkMode}
-          />
+         <SearchFilterBar
+  searchTerm={searchTerm}
+  onSearchChange={value => setSearchTerm(value)}   // ✅ هنا كيعيط handleSearchChange
+  filterStatus={filterStatus}
+  onFilterChange={value => setFilterStatus(value)} // ✅ هنا كيعيط handleFilterChange
+  onReset={handleResetFilters}
+  darkMode={darkMode}
+/>
+
 
           <DossierTable
             dossiers={currentDossiers}

@@ -1,13 +1,13 @@
 // src/pages/division/DivisionPage.jsx
 import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Spinner, Row, Col, Card, Badge } from "react-bootstrap";
-import { createDivision, updateDivision, deleteDivision } from "../../api/divisionApi";
+import { createDivision, updateDivision, deleteDivision, exportDivisionsPDF, exportDivisionsCSV } from "../../api/divisionApi";
 import { getDivisions } from "../../api/dossierApi";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../compenents/ConfirmModal";
+import ExportComponent from "./ExportComponent";
 import { useTranslation } from "react-i18next";
 import PaginationComponent from "../../compenents/PaginationComponent";
-import renderMobileCards from "./renderMobileCards";
 
 const DivisionPage = ({ darkMode }) => {
   const [divisions, setDivisions] = useState([]);
@@ -102,6 +102,15 @@ const DivisionPage = ({ darkMode }) => {
     }
   };
 
+  // Export handlers
+  const handleExportPDF = async () => {
+    return await exportDivisionsPDF();
+  };
+
+  const handleExportCSV = async () => {
+    return await exportDivisionsCSV();
+  };
+
   // Render mobile card view for small screens
   const renderMobileCards = () => (
     <div className="d-md-none">
@@ -181,23 +190,37 @@ const DivisionPage = ({ darkMode }) => {
     >
       {/* Header Section */}
       <Row className="mb-3 align-items-center">
-        <Col xs={12} md={8} lg={9}>
+        <Col xs={12} md={6} lg={7}>
           <h2 className="mb-2 mb-md-0">{t('divisionPage.title', 'Gestion des Divisions')}</h2>
         </Col>
-        <Col xs={12} md={4} lg={3} className="text-md-end">
-          <Button 
-            className={`w-100 w-md-auto ${darkMode ? "btn-outline-light" : "btn-primary"}`}
-            onClick={() => handleShowModal()}
-          >
-            <span className="d-inline d-sm-none">+</span>
-            <span className="d-none d-sm-inline">{t('divisionPage.newDivision', '+ Nouvelle Division')}</span>
-          </Button>
+        <Col xs={12} md={6} lg={5} className="text-md-end">
+          <div className="d-flex gap-2 justify-content-end flex-wrap">
+            {/* Export Component */}
+            <ExportComponent
+              onExportPDF={handleExportPDF}
+              onExportCSV={handleExportCSV}
+              darkMode={darkMode}
+              size="sm"
+              disabled={filteredDivisions.length === 0}
+              className="me-2"
+            />
+            
+            {/* Add Division Button */}
+            <Button 
+              className={`${darkMode ? "btn-outline-light" : "btn-primary"}`}
+              size="sm"
+              onClick={() => handleShowModal()}
+            >
+              <span className="d-inline d-sm-none">+</span>
+              <span className="d-none d-sm-inline">{t('divisionPage.newDivision', '+ Nouvelle Division')}</span>
+            </Button>
+          </div>
         </Col>
       </Row>
 
-      {/* Search Section */}
-      <Row className="mb-3">
-        <Col xs={12} md={8} lg={6}>
+      {/* Search Section with Stats */}
+      <Row className="mb-3 align-items-center">
+        <Col xs={12} md={6} lg={8}>
           <Form.Group>
             <Form.Control 
               type="text" 
@@ -207,6 +230,18 @@ const DivisionPage = ({ darkMode }) => {
               className={darkMode ? "bg-secondary text-light border-secondary" : ""}
             />
           </Form.Group>
+        </Col>
+        <Col xs={12} md={6} lg={4} className="text-md-end">
+          <div className="d-flex justify-content-end align-items-center gap-2 mt-2 mt-md-0">
+            <Badge bg={darkMode ? "secondary" : "primary"} className="fs-6">
+              {filteredDivisions.length} {t('divisionPage.stats.total', 'divisions')}
+            </Badge>
+            {searchTerm && (
+              <Badge bg={darkMode ? "info" : "info"} className="fs-6">
+                {t('divisionPage.stats.filtered', 'filtrées')}
+              </Badge>
+            )}
+          </div>
         </Col>
       </Row>
 
@@ -274,7 +309,10 @@ const DivisionPage = ({ darkMode }) => {
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center py-4">
-                    {t('divisionPage.noData', 'Aucune division trouvée')}
+                    {searchTerm ? 
+                      t('divisionPage.noSearchResults', 'Aucun résultat trouvé pour votre recherche') :
+                      t('divisionPage.noData', 'Aucune division trouvée')
+                    }
                   </td>
                 </tr>
               )}
@@ -287,16 +325,47 @@ const DivisionPage = ({ darkMode }) => {
       {renderMobileCards()}
 
       {/* Pagination */}
-      <Row className="mt-4">
-        <Col xs={12} className="d-flex justify-content-center">
-          <PaginationComponent
-            totalItems={filteredDivisions.length}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
-        </Col>
-      </Row>
+      {filteredDivisions.length > pageSize && (
+        <Row className="mt-4">
+          <Col xs={12} className="d-flex justify-content-center">
+            <PaginationComponent
+              totalItems={filteredDivisions.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          </Col>
+        </Row>
+      )}
+
+      {/* Empty State when no data */}
+      {filteredDivisions.length === 0 && !loading && (
+        <div className="text-center py-5">
+          <div className="mb-3">
+            <i className="fas fa-folder-open fa-3x text-muted"></i>
+          </div>
+          <h4 className="text-muted">
+            {searchTerm ? 
+              t('divisionPage.emptySearch', 'Aucun résultat') :
+              t('divisionPage.emptyState', 'Aucune division')
+            }
+          </h4>
+          <p className="text-muted mb-4">
+            {searchTerm ? 
+              t('divisionPage.emptySearchDesc', 'Essayez de modifier votre recherche') :
+              t('divisionPage.emptyStateDesc', 'Commencez par créer votre première division')
+            }
+          </p>
+          {!searchTerm && (
+            <Button 
+              variant={darkMode ? "outline-light" : "primary"}
+              onClick={() => handleShowModal()}
+            >
+              {t('divisionPage.createFirst', 'Créer la première division')}
+            </Button>
+          )}
+        </div>
+      )}
 
       {/* Modal */}
       <Modal 
@@ -380,5 +449,6 @@ const DivisionPage = ({ darkMode }) => {
     </div>
   );
 
-}
+};
+
 export default DivisionPage;

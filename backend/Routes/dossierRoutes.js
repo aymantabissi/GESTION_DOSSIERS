@@ -2,12 +2,11 @@ const express = require('express');
 const router = express.Router();
 const dossierController = require('../Controllers/dossierController');
 const authMiddleware = require('../Middleware/authMiddleware'); 
-const permissionMiddleware = require('../Middleware/permissionMiddleware '); // 🔥 FIXED: Removed space
+const permissionMiddleware = require('../Middleware/permissionMiddleware'); 
 
-// 🔥 ISSUE 1 FIXED: Don't use router.use() for authMiddleware 
-// because it conflicts with individual route auth
 
-// 📋 Get all dossiers
+
+//  Get all dossiers
 router.get(
   '/', 
   authMiddleware(), 
@@ -15,55 +14,55 @@ router.get(
   dossierController.getDossiers
 );
 
-// 👁️ Get dossier suivi/tracking
+//  Get dossier suivi/tracking
 router.get(
   '/:id/suivi', 
-  authMiddleware(), // 🔥 FIXED: Added missing authMiddleware
+  authMiddleware(), 
   permissionMiddleware(['VIEW_DOSSIER']), 
   dossierController.getSuiviByDossier
 );
 
-// 📄 Get dossier instructions  
+//  Get dossier instructions  
 router.get(
   '/:num_dossier/instructions', 
-  authMiddleware(), // 🔥 FIXED: Added missing authMiddleware
+  authMiddleware(), 
   permissionMiddleware(['VIEW_INSTRUCTION']), 
   dossierController.getDossierInstructions
 );
 
-// ➕ Create new dossier
+//  Create new dossier
 router.post(
   '/', 
-  authMiddleware(), // 🔥 FIXED: Added missing authMiddleware
+  authMiddleware(), 
   permissionMiddleware(['CREATE_DOSSIER']), 
   dossierController.createDossier
 );
 
-// ➕ Add instruction to dossier
+//  Add instruction to dossier
 router.post(
   '/add-instruction', 
-  authMiddleware(), // 🔥 FIXED: Added missing authMiddleware
+  authMiddleware(), 
   permissionMiddleware(['ADD_INSTRUCTION']), 
   dossierController.addInstructionToDossier
 );
 
-// ✏️ Update dossier
+//  Update dossier
 router.put(
   '/:id', 
-  authMiddleware(), // 🔥 FIXED: Added missing authMiddleware
+  authMiddleware(), // 
   permissionMiddleware(['UPDATE_DOSSIER']), 
   dossierController.updateDossier
 );
 
-// 🗑️ Delete dossier
+//  Delete dossier
 router.delete(
   '/:id', 
-  authMiddleware(), // 🔥 FIXED: Added missing authMiddleware
+  authMiddleware(), 
   permissionMiddleware(['DELETE_DOSSIER']), 
   dossierController.deleteDossier
 );
 
-// 🔍 Debug route to check permissions (remove in production)
+//  Debug route to check permissions (remove in production)
 router.get(
   '/debug/permissions',
   authMiddleware(),

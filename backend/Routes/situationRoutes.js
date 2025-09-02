@@ -1,9 +1,8 @@
-// routes/situationRoutes.js
 const express = require('express');
 const router = express.Router();
 const situationController = require('../Controllers/SituationDossier');
 const authMiddleware = require('../Middleware/authMiddleware'); 
-const permissionMiddleware = require('../Middleware/permissionMiddleware ');
+const permissionMiddleware = require('../Middleware/permissionMiddleware');
 
 
 router.use(authMiddleware());
