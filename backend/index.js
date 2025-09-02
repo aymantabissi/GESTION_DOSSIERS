@@ -1,7 +1,15 @@
+// index.js
 const express = require('express');
-require('dotenv').config();
 const cors = require('cors');
 const path = require('path');
+const dotenv = require('dotenv');
+
+// Load env file based on NODE_ENV
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env'
+});
+
+const { sequelize } = require('./Models');
 
 // Import routes
 const dossierRoutes = require('./Routes/dossierRoutes');
@@ -16,30 +24,35 @@ const permissionRoutes = require('./Routes/permissionRoutes');
 const notificationRoutes = require('./Routes/notificationRoutes');
 const userRoutes = require('./Routes/userRoutes');
 
-const { sequelize } = require('./Models');
-
 const app = express();
 
 // Middleware
 app.use(express.json());
 
-// CORS configuration
+// Allowed origins (add all Vercel frontend URLs + localhost)
 const allowedOrigins = [
   'http://localhost:3000',
   'https://gestion-dossiers-66z6.vercel.app',
-  'https://gestion-dossiers-yuo9.vercel.app' // <-- add this
+  'https://gestion-dossiers-yuo9.vercel.app'
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true); // allow curl/postman/mobile
+    if(allowedOrigins.includes(origin)){
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET','POST','PUT','DELETE'],
   credentials: true
 }));
 
-
+// Serve static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check route
+// Health check
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Backend API is running!', 
@@ -65,12 +78,8 @@ app.use('/api/profiles', profileRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// Sync database and start server
+// Start server
 const PORT = process.env.PORT || 5000;
-
-console.log('🔧 Starting server...');
-console.log('📊 Environment:', process.env.NODE_ENV);
-console.log('🔌 Port:', PORT);
 
 sequelize.sync({ alter: true })
   .then(() => {
