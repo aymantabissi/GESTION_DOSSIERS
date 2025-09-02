@@ -24,20 +24,18 @@ const app = express();
 app.use(express.json());
 
 // CORS configuration
-const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? [
-      'https://gestion-dossiers-66z6.vercel.app' 
-    ]
-  : ['http://localhost:3000'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://gestion-dossiers-66z6.vercel.app',
+  'https://gestion-dossiers-yuo9.vercel.app' // <-- add this
+];
 
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://gestion-dossiers-66z6.vercel.app'  // Add your actual Vercel URL here
-  ],
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
